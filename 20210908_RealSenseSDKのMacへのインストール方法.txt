@@ -1,0 +1,81 @@
+pyrealsense2をMacで使う方法
+---------------------------------------
+
+https://qiita.com/kakuminami97/items/68aae284e434c370c428
+に従ってインストール，
+cmakeの前に下記5行を入力
+brew link openssl
+echo 'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"' >> ~/.zshrc
+export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
+
+
+
+
+
+---------------------------------------
+RealSenseSDKのMacへのインストール方法
+
+
+事前準備
+---------------------------------------
+xcodeのインストール
+App storeからダウンロード
+
+brewのインストール
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+そのほか，cmakeでエラーが出た箇所にあわせて，インストール
+
+
+
+ターミナルでの作業
+---------------------------------------
+brew install libusb pkg-config
+brew install homebrew/versions/glfw3
+brew install cmake
+brew install librealsense
+git clone https://github.com/IntelRealSense/librealsense
+
+
+// 下記5行がないとOpenSSLが読めないというエラーがでるので，cmakeの前に下記5行を入力
+brew link openssl
+echo 'export PATH="/usr/local/opt/openssl@1.1/bin:$PATH"' >> ~/.zshrc
+export LDFLAGS="-L/usr/local/opt/openssl@1.1/lib"
+export CPPFLAGS="-I/usr/local/opt/openssl@1.1/include"
+export PKG_CONFIG_PATH="/usr/local/opt/openssl@1.1/lib/pkgconfig"
+
+cd librealsense
+mkdir build
+cd build
+cmake .. -DBUILD_EXAMPLES=true -DHWM_OVER_XU=false -G Xcode
+
+(すでにbuildしていたらエラーがでるので，buildフォルダの中身をすべて削除してから，cmakeする)
+
+(Generatin done　と表示されたらOK)
+(Configuring incomplete　と表示されたらNG)
+
+open librealsense2.xcodeproj
+
+---------------------------------------
+(xcodeの画面が起動する)
+(xcodeでRealsenseViewerをビルド)
+(左ペインの「librealsense2」を選択すると，xcodeorojの画面が表示される)
+(「TARGETS」の「realsense-view」を選択し，ツールバーの「Product」 > 「Build」をクリック)
+(画面上にプログレスバーが表示されるので，しばらく放置)
+
+もしエラーがでた，「Build Phases」をクリックし，
+「Link Binary With Libraries」をクリックし，
+「＋」をクリックして，
+「CoreVideo.framework」「IOKit.framework」「Cocoa.framework」を追加し，ビルド
+
+(これでRealsenseViewerのインストール完了)
+
+
+
+realsense viewerの起動方法（ターミナル入力）
+---------------------------------------
+realsense-viewer
+
+---------------------------------------
